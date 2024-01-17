@@ -8,21 +8,23 @@ class FirebaseOrganisation extends Equatable {
   final int brandsCount;
   final String website;
 
-  const FirebaseOrganisation(
-      {required this.id,
-      required this.type,
-      required this.brandsCount,
-      required this.website});
+  const FirebaseOrganisation({
+    required this.id,
+    required this.type,
+    required this.brandsCount,
+    required this.website,
+  });
 
   @override
   List<Object?> get props => [id, type, brandsCount];
 
   factory FirebaseOrganisation.fromJson(Map<String, dynamic> json) =>
       FirebaseOrganisation(
-          id: json['id'] as String,
-          type: json['type'] as String,
-          brandsCount: json['brandsCount'] as int,
-          website: json['website'] as String);
+        id: json['id'] as String,
+        type: json['type'] as String,
+        brandsCount: json['brandsCount'] as int,
+        website: json['website'] as String,
+      );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
@@ -32,20 +34,21 @@ class FirebaseOrganisation extends Equatable {
       };
 
   Organization toOrganization() => Organization(
-      id: id,
-      type: _toOrganizationTypeFromString(type),
-      brandsCount: brandsCount,
-      website: website);
+        id: id,
+        type: _toOrganizationTypeFromString(type),
+        brandsCount: brandsCount,
+        website: website,
+      );
 }
 
 OrganizationType _toOrganizationTypeFromString(String type) {
   switch (type) {
     case 'peta_white':
-      return OrganizationType.PetaWhite;
+      return OrganizationType.petaWhite;
     case 'peta_black':
-      return OrganizationType.PetaBlack;
+      return OrganizationType.petaBlack;
     case 'bunny_search':
-      return OrganizationType.BunnySearch;
+      return OrganizationType.bunnySearch;
   }
   throw StateError('Unknown type: $type');
 }

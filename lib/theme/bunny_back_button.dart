@@ -8,45 +8,44 @@ class BunnyBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  color: AppColors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.white)),
-              child: Material(
-                color: AppColors.transparent,
-                child: InkWell(
-                  customBorder: CircleBorder(side: BorderSide()),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: SvgPicture.asset(
-                      ImagesProvider.BACK,
-                      color: AppColors.textBlue,
-                      width: 24,
-                      height: 24,
-                    ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.white),
+            ),
+            child: Material(
+              color: AppColors.transparent,
+              child: InkWell(
+                customBorder: const CircleBorder(side: BorderSide()),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                highlightColor: AppColors.textBlue.withOpacity(0.1),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: SvgPicture.asset(
+                    ImagesProvider.BACK,
+                    color: AppColors.textBlue,
+                    width: 24,
+                    height: 24,
                   ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  highlightColor: AppColors.textBlue.withOpacity(0.1),
                 ),
               ),
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

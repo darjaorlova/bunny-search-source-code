@@ -18,7 +18,7 @@ class OrganizationsPage extends StatefulWidget {
   static Widget withBloc() => BlocProvider(
         create: (context) => OrganizationsBloc(brandsRepository: context.read())
           ..add(LoadEvent()),
-        child: OrganizationsPage(),
+        child: const OrganizationsPage(),
       );
 }
 
@@ -34,59 +34,67 @@ class _OrganizationsPageState extends State<OrganizationsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<OrganizationsBloc, OrganizationsState>(
-        listener: (context, state) {
-      final isError = state.orgResult.isError == true;
-      if (isError) {
-        _handleError();
-      }
-    }, builder: (context, state) {
-      final progress = state.orgResult.isInProgress;
-      final orgz =
-          state.orgResult.isSuccessful ? state.orgResult.value ?? [] : [];
-      return Scaffold(
-        backgroundColor: AppColors.white,
-        appBar: AppBar(
-          centerTitle: true,
+      listener: (context, state) {
+        final isError = state.orgResult.isError == true;
+        if (isError) {
+          _handleError();
+        }
+      },
+      builder: (context, state) {
+        final progress = state.orgResult.isInProgress;
+        final orgz =
+            state.orgResult.isSuccessful ? state.orgResult.value ?? [] : [];
+        return Scaffold(
           backgroundColor: AppColors.white,
-          elevation: 0,
-          leading: BunnyAppBarBackButton(),
-          title: Column(
-            children: [
-              Text(
-                LocaleKeys.organizations_title.tr(),
-                style: AppTypography.h4,
-              ),
-            ],
-          ),
-        ),
-        body: progress
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.rose,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            leading: const BunnyAppBarBackButton(),
+            title: Column(
+              children: [
+                Text(
+                  LocaleKeys.organizations_title.tr(),
+                  style: AppTypography.h4,
                 ),
-              )
-            : SafeArea(
-                child: GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              ],
+            ),
+          ),
+          body: progress
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.rose,
+                  ),
+                )
+              : SafeArea(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 20,
+                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       mainAxisSpacing: 12,
                       crossAxisSpacing: 12,
-                      crossAxisCount: 2),
-                  itemBuilder: (context, pos) {
-                    return OrganizationListCard(details: orgz[pos]);
-                  },
-                  itemCount: orgz.length,
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (context, pos) {
+                      return OrganizationListCard(details: orgz[pos]);
+                    },
+                    itemCount: orgz.length,
+                  ),
                 ),
-              ),
-      );
-    });
+        );
+      },
+    );
   }
 
   void _handleError() {
     ScaffoldMessenger.of(context).showSnackBar(
       BunnyDefaultSnackBar(
-          text: LocaleKeys.general_error.tr(),
-          onRetry: () => _bloc.add(LoadEvent())),
+        text: LocaleKeys.general_error.tr(),
+        onRetry: () => _bloc.add(LoadEvent()),
+      ),
     );
   }
 }

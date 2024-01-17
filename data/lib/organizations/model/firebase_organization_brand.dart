@@ -10,13 +10,14 @@ class FirebaseOrganizationBrand extends Equatable {
   final bool? hasVeganProducts;
   final String? logoUrl;
 
-  const FirebaseOrganizationBrand(
-      {required this.id,
-      required this.title,
-      required this.organizationType,
-      required this.organizationWebsite,
-      required this.hasVeganProducts,
-      required this.logoUrl});
+  const FirebaseOrganizationBrand({
+    required this.id,
+    required this.title,
+    required this.organizationType,
+    required this.organizationWebsite,
+    required this.hasVeganProducts,
+    required this.logoUrl,
+  });
 
   factory FirebaseOrganizationBrand.fromJson(Map<String, dynamic> json) =>
       FirebaseOrganizationBrand(
@@ -38,12 +39,13 @@ class FirebaseOrganizationBrand extends Equatable {
       };
 
   OrganizationBrand toOrganizationBrand() => OrganizationBrand(
-      id: id,
-      title: title,
-      organizationType: _toOrganizationTypeFromString(organizationType),
-      organizationWebsite: organizationWebsite,
-      hasVeganProducts: hasVeganProducts,
-      logoUrl: logoUrl);
+        id: id,
+        title: title,
+        organizationType: _toOrganizationTypeFromString(organizationType),
+        organizationWebsite: organizationWebsite,
+        hasVeganProducts: hasVeganProducts,
+        logoUrl: logoUrl,
+      );
 
   @override
   List<Object?> get props => [
@@ -59,11 +61,11 @@ class FirebaseOrganizationBrand extends Equatable {
 OrganizationType _toOrganizationTypeFromString(String type) {
   switch (type) {
     case 'peta_white':
-      return OrganizationType.PetaWhite;
+      return OrganizationType.petaWhite;
     case 'peta_black':
-      return OrganizationType.PetaBlack;
+      return OrganizationType.petaBlack;
     case 'bunny_search':
-      return OrganizationType.BunnySearch;
+      return OrganizationType.bunnySearch;
   }
   throw StateError('Unknown type: $type');
 }

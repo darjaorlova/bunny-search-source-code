@@ -20,8 +20,9 @@ class OrganizationsState extends Equatable {
 
   const OrganizationsState({required this.orgResult});
 
-  OrganizationsState copyWith(
-          {DelayedResult<List<OrganizationDetails>>? orgResult}) =>
+  OrganizationsState copyWith({
+    DelayedResult<List<OrganizationDetails>>? orgResult,
+  }) =>
       OrganizationsState(orgResult: orgResult ?? this.orgResult);
 
   @override
@@ -33,18 +34,19 @@ class OrganizationsBloc
   final BrandsRepository brandsRepository;
 
   OrganizationsBloc({required this.brandsRepository})
-      : super(OrganizationsState(orgResult: DelayedResult.inProgress()));
+      : super(const OrganizationsState(orgResult: DelayedResult.inProgress()));
 
   @override
   Stream<OrganizationsState> mapEventToState(
-      OrganizationsBlocEvent event) async* {
+    OrganizationsBlocEvent event,
+  ) async* {
     if (event is LoadEvent) {
       yield* _mapLoadEventToState();
     }
   }
 
   Stream<OrganizationsState> _mapLoadEventToState() async* {
-    yield state.copyWith(orgResult: DelayedResult.inProgress());
+    yield state.copyWith(orgResult: const DelayedResult.inProgress());
 
     try {
       final organizations = await brandsRepository.getAllOrganizations();

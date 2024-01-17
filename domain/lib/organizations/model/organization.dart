@@ -7,7 +7,12 @@ class Organization extends Equatable {
   final int brandsCount;
   final String website;
 
-  const Organization({required this.id, required this.type, required this.brandsCount, required this.website});
+  const Organization({
+    required this.id,
+    required this.type,
+    required this.brandsCount,
+    required this.website,
+  });
 
   @override
   List<Object> get props => [id, type, brandsCount, website];

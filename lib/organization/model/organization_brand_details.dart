@@ -5,7 +5,10 @@ class OrganizationBrandDetails extends Equatable {
   final OrganizationBrand info;
   final String logoSrc;
 
-  const OrganizationBrandDetails({required this.info, required this.logoSrc});
+  const OrganizationBrandDetails({
+    required this.info,
+    required this.logoSrc,
+  });
 
   @override
   List<Object?> get props => [info, logoSrc];

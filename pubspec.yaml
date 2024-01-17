@@ -39,10 +39,11 @@ dependencies:
   quiver: ^3.0.1
   rxdart: ^0.27.2
   floor: ^1.2.0
-  cached_network_image: ^3.1.0
+  cached_network_image: ^3.3.1
   firebase_crashlytics: ^2.2.4
   easy_localization: ^3.0.0
   cupertino_icons: ^1.0.2
+  file: ^6.1.4
 
 dependency_overrides:
   platform: ^3.1.0

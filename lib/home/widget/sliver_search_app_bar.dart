@@ -1,6 +1,6 @@
 import 'package:bunny_search/generated/locale_keys.g.dart';
 import 'package:bunny_search/home/widget/background_wave_clipper.dart';
-import 'package:bunny_search/home/widget/search_bar.dart';
+import 'package:bunny_search/home/widget/search_bar.dart' as sc;
 import 'package:bunny_search/home/widget/search_bunny_icon_clipper.dart';
 import 'package:bunny_search/theme/app_typography.dart';
 import 'package:bunny_search/theme/images_provider.dart';
@@ -8,7 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class SliverSearchAppBar extends SliverPersistentHeaderDelegate {
-  final OnSearchTermChanged onSearchTermChanged;
+  final sc.OnSearchTermChanged onSearchTermChanged;
 
   SliverSearchAppBar({required this.onSearchTermChanged});
 
@@ -71,10 +71,11 @@ class SliverSearchAppBar extends SliverPersistentHeaderDelegate {
               ),
             )),
         Positioned(
-            top: 64 + searchExtraOffset,
-            child: SearchBar(
-              onSearchTermChanged: onSearchTermChanged,
-            ))
+          top: 64 + searchExtraOffset,
+          child: sc.SearchBar(
+            onSearchTermChanged: onSearchTermChanged,
+          ),
+        )
       ],
     );
   }

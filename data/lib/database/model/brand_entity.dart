@@ -12,14 +12,15 @@ class BrandEntity extends Equatable {
   final String? logoUrl;
   final bool popular;
 
-  BrandEntity(
-      {this.id,
-      required this.title,
-      required this.description,
-      required this.organizationsIds,
-      required this.hasVeganProducts,
-      required this.logoUrl,
-      required this.popular});
+  const BrandEntity({
+    this.id,
+    required this.title,
+    required this.description,
+    required this.organizationsIds,
+    required this.hasVeganProducts,
+    required this.logoUrl,
+    required this.popular,
+  });
 
   @override
   List<Object?> get props => [

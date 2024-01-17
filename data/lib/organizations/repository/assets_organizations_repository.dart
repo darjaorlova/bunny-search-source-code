@@ -14,9 +14,10 @@ class AssetsOrganizationsRepository extends OrganizationsRepository {
   Future<List<Organization>> getAll() async {
     final organizations = databaseJson['organizations'] as Map<String, dynamic>;
     return organizations.values
-        .map<Organization>((e) =>
-            FirebaseOrganisation.fromJson(Map<String, dynamic>.from(e))
-                .toOrganization())
+        .map<Organization>(
+          (e) => FirebaseOrganisation.fromJson(Map<String, dynamic>.from(e))
+              .toOrganization(),
+        )
         .toList();
   }
 
@@ -30,21 +31,23 @@ class AssetsOrganizationsRepository extends OrganizationsRepository {
   Future<List<OrganizationBrand>> getBrandsByType(OrganizationType type) async {
     var mappedType = '';
     switch (type) {
-      case OrganizationType.PetaWhite:
+      case OrganizationType.petaWhite:
         mappedType = 'peta_white';
         break;
-      case OrganizationType.PetaBlack:
+      case OrganizationType.petaBlack:
         mappedType = 'peta_black';
         break;
-      case OrganizationType.BunnySearch:
+      case OrganizationType.bunnySearch:
         mappedType = 'bunny_search';
         break;
     }
     final brands = databaseJson['brands'][mappedType] as Map<String, dynamic>;
     return brands.values
-        .map<OrganizationBrand>((e) =>
-            FirebaseOrganizationBrand.fromJson(Map<String, dynamic>.from(e))
-                .toOrganizationBrand())
+        .map<OrganizationBrand>(
+          (e) =>
+              FirebaseOrganizationBrand.fromJson(Map<String, dynamic>.from(e))
+                  .toOrganizationBrand(),
+        )
         .toList();
   }
 
@@ -64,9 +67,11 @@ class AssetsOrganizationsRepository extends OrganizationsRepository {
   Future<List<OrganizationBrand>> getPopular() async {
     final brands = databaseJson['brands']['popular'] as Map<String, dynamic>;
     return brands.values
-        .map<OrganizationBrand>((e) =>
-            FirebaseOrganizationBrand.fromJson(Map<String, dynamic>.from(e))
-                .toOrganizationBrand())
+        .map<OrganizationBrand>(
+          (e) =>
+              FirebaseOrganizationBrand.fromJson(Map<String, dynamic>.from(e))
+                  .toOrganizationBrand(),
+        )
         .toList();
   }
 }

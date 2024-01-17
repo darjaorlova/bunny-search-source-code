@@ -31,19 +31,23 @@ class PopularBrandBloc
   final BrandsRepository brandsRepository;
 
   PopularBrandBloc({required this.brandsRepository})
-      : super(PopularBrandsState(brandsResult: DelayedResult.inProgress()));
+      : super(
+          const PopularBrandsState(brandsResult: DelayedResult.inProgress()),
+        );
 
   @override
   Stream<PopularBrandsState> mapEventToState(
-      PopularBrandsBlocEvent event) async* {
+    PopularBrandsBlocEvent event,
+  ) async* {
     if (event is LoadBrandsEvent) {
       yield* _mapLoadBrandsEventToState(event);
     }
   }
 
   Stream<PopularBrandsState> _mapLoadBrandsEventToState(
-      LoadBrandsEvent event) async* {
-    yield state.copyWith(brandsResult: DelayedResult.inProgress());
+    LoadBrandsEvent event,
+  ) async* {
+    yield state.copyWith(brandsResult: const DelayedResult.inProgress());
 
     try {
       final brands = await brandsRepository.getAllPopularBrands();

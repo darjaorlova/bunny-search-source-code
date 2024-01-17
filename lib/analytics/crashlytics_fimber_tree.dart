@@ -7,8 +7,13 @@ class CrashlyticsFimberTree extends LogTree {
   static const List<String> defaultLevels = ['W', 'E'];
 
   @override
-  void log(String level, String message,
-      {String? tag, dynamic ex, StackTrace? stacktrace}) {
+  void log(
+    String level,
+    String message, {
+    String? tag,
+    dynamic ex,
+    StackTrace? stacktrace,
+  }) {
     FirebaseCrashlytics.instance.log(message);
     FirebaseCrashlytics.instance
         .recordError(ex ?? Exception(message), stacktrace);

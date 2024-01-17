@@ -45,83 +45,96 @@ class _OrganizationBrandsPageState extends State<OrganizationBrandsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<OrganizationBrandBloc, OrganizationBrandsState>(
-        listener: (context, state) {
-      final isError = state.brandsResult.isError == true;
-      if (isError) {
-        _handleError();
-      }
-    }, builder: (context, state) {
-      final progress = state.brandsResult.isInProgress;
-      final brands =
-          state.brandsResult.isSuccessful ? state.brandsResult.value ?? [] : [];
-      return Scaffold(
-        backgroundColor: AppColors.white,
-        appBar: AppBar(
-          centerTitle: true,
+      listener: (context, state) {
+        final isError = state.brandsResult.isError == true;
+        if (isError) {
+          _handleError();
+        }
+      },
+      builder: (context, state) {
+        final progress = state.brandsResult.isInProgress;
+        final brands = state.brandsResult.isSuccessful
+            ? state.brandsResult.value ?? []
+            : [];
+        return Scaffold(
           backgroundColor: AppColors.white,
-          elevation: 0,
-          leading: BunnyAppBarBackButton(),
-          title: Column(
-            children: [
-              Text(
-                widget.organization.title,
-                style: AppTypography.h4,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Text(
-                LocaleKeys.organization_brands_count.tr(
-                    namedArgs: {'count': '${widget.organization.brandsCount}'}),
-                style: AppTypography.caption,
-              )
-            ],
-          ),
-        ),
-        body: progress
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.rose,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            leading: const BunnyAppBarBackButton(),
+            title: Column(
+              children: [
+                Text(
+                  widget.organization.title,
+                  style: AppTypography.h4,
                 ),
-              )
-            : SafeArea(
-                child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 24),
-                  itemBuilder: (context, pos) {
-                    Brand brand = brands[pos];
-                    return TextButton(
-                      style: ButtonStyle(
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  LocaleKeys.organization_brands_count.tr(
+                    namedArgs: {'count': '${widget.organization.brandsCount}'},
+                  ),
+                  style: AppTypography.caption,
+                )
+              ],
+            ),
+          ),
+          body: progress
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.rose,
+                  ),
+                )
+              : SafeArea(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    itemBuilder: (context, pos) {
+                      Brand brand = brands[pos];
+                      return TextButton(
+                        style: ButtonStyle(
                           overlayColor: MaterialStateProperty.all(
-                              AppColors.rose.withOpacity(0.05))),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                BrandDetailsPage(brand: brand)));
-                      },
-                      child: BrandListItem(
+                            AppColors.rose.withOpacity(0.05),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  BrandDetailsPage(brand: brand),
+                            ),
+                          );
+                        },
+                        child: BrandListItem(
                           title: brand.title,
                           filters: _buildFiltersString(
-                              brand.organizations.values.toList()),
-                          logoUrl: brand.logoUrl ?? ''),
-                    );
-                  },
-                  itemCount: brands.length,
+                            brand.organizations.values.toList(),
+                          ),
+                          logoUrl: brand.logoUrl ?? '',
+                        ),
+                      );
+                    },
+                    itemCount: brands.length,
+                  ),
                 ),
-              ),
-      );
-    });
+        );
+      },
+    );
   }
 
   String _buildFiltersString(List<Organization> organizations) {
-    return '${organizations.map((o) => OrganizationsMapper.organizationTypeToString(o.type)).join(' • ')}';
+    return organizations.map((o) => OrganizationsMapper.organizationTypeToString(o.type)).join(' • ');
   }
 
   void _handleError() {
     ScaffoldMessenger.of(context).showSnackBar(
       BunnyDefaultSnackBar(
-          text: LocaleKeys.general_error.tr(),
-          onRetry: () => _bloc.add(
-              LoadBrandsEvent(organizationType: widget.organization.type))),
+        text: LocaleKeys.general_error.tr(),
+        onRetry: () => _bloc.add(
+          LoadBrandsEvent(organizationType: widget.organization.type),
+        ),
+      ),
     );
   }
 }

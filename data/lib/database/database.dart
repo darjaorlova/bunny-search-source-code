@@ -5,13 +5,18 @@ import 'package:data/database/model/organization_entity.dart';
 import 'package:floor/floor.dart';
 import 'list_type_converter.dart';
 
+// TODO: fix this when dependencies are upgraded
+// ignore: depend_on_referenced_packages
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'dart:async';
 
 part 'database.g.dart';
 
 @TypeConverters([ListTypeConverter])
-@Database(version: 1, entities: [BrandEntity, BrandWithOrganizationEntity, OrganizationEntity])
+@Database(
+  version: 1,
+  entities: [BrandEntity, BrandWithOrganizationEntity, OrganizationEntity],
+)
 abstract class BunnySearchDatabase extends FloorDatabase {
   BrandsDao get brandsDao;
 }

@@ -37,25 +37,28 @@ class HomeBlocState extends Equatable {
   final List<Brand> popularBrands;
   final bool showSupportDialog;
 
-  const HomeBlocState(
-      {required this.searchTerm,
-      required this.searchResult,
-      required this.organizationsResult,
-      required this.popularBrands,
-      required this.showSupportDialog});
+  const HomeBlocState({
+    required this.searchTerm,
+    required this.searchResult,
+    required this.organizationsResult,
+    required this.popularBrands,
+    required this.showSupportDialog,
+  });
 
-  HomeBlocState copyWith(
-          {String? searchTerm,
-          Optional<DelayedResult<List<Brand>>>? searchResult,
-          DelayedResult<List<OrganizationDetails>>? organizationsResult,
-          List<Brand>? popularBrands,
-          bool? showSupportDialog}) =>
+  HomeBlocState copyWith({
+    String? searchTerm,
+    Optional<DelayedResult<List<Brand>>>? searchResult,
+    DelayedResult<List<OrganizationDetails>>? organizationsResult,
+    List<Brand>? popularBrands,
+    bool? showSupportDialog,
+  }) =>
       HomeBlocState(
-          searchTerm: searchTerm ?? this.searchTerm,
-          searchResult: searchResult ?? this.searchResult,
-          organizationsResult: organizationsResult ?? this.organizationsResult,
-          popularBrands: popularBrands ?? this.popularBrands,
-          showSupportDialog: showSupportDialog ?? this.showSupportDialog);
+        searchTerm: searchTerm ?? this.searchTerm,
+        searchResult: searchResult ?? this.searchResult,
+        organizationsResult: organizationsResult ?? this.organizationsResult,
+        popularBrands: popularBrands ?? this.popularBrands,
+        showSupportDialog: showSupportDialog ?? this.showSupportDialog,
+      );
 
   @override
   List<Object?> get props => [
@@ -72,12 +75,15 @@ class HomeBloc extends Bloc<HomeBlocEvent, HomeBlocState> {
   final KeyValueStorage keyValueStorage;
 
   HomeBloc({required this.brandsRepository, required this.keyValueStorage})
-      : super(HomeBlocState(
+      : super(
+          const HomeBlocState(
             searchTerm: '',
             searchResult: Optional.absent(),
             organizationsResult: DelayedResult.inProgress(),
             popularBrands: [],
-            showSupportDialog: false));
+            showSupportDialog: false,
+          ),
+        );
 
   @override
   Stream<HomeBlocState> mapEventToState(HomeBlocEvent event) async* {
@@ -93,24 +99,26 @@ class HomeBloc extends Bloc<HomeBlocEvent, HomeBlocState> {
 
   @override
   Stream<Transition<HomeBlocEvent, HomeBlocState>> transformEvents(
-      Stream<HomeBlocEvent> events,
-      TransitionFunction<HomeBlocEvent, HomeBlocState> transitionFn) {
+    Stream<HomeBlocEvent> events,
+    TransitionFunction<HomeBlocEvent, HomeBlocState> transitionFn,
+  ) {
     final nonTransformedStream = events.where((event) => event is! SearchEvent);
 
     final debounceSetSearchTermStream = events
         .where((event) => event is SearchEvent)
-        .debounceTime(Duration(milliseconds: 500));
+        .debounceTime(const Duration(milliseconds: 500));
 
     return super.transformEvents(
-        MergeStream([
-          nonTransformedStream,
-          debounceSetSearchTermStream,
-        ]),
-        transitionFn);
+      MergeStream([
+        nonTransformedStream,
+        debounceSetSearchTermStream,
+      ]),
+      transitionFn,
+    );
   }
 
   Stream<HomeBlocState> _mapLoadEventToState() async* {
-    yield state.copyWith(organizationsResult: DelayedResult.inProgress());
+    yield state.copyWith(organizationsResult: const DelayedResult.inProgress());
 
     try {
       // TODO when searching also make sure db is available
@@ -123,9 +131,9 @@ class HomeBloc extends Bloc<HomeBlocEvent, HomeBlocState> {
           .toList();
       final popular = await brandsRepository.getAllPopularBrands();
       yield state.copyWith(
-          organizationsResult: DelayedResult.success(mapped),
-          popularBrands: popular.take(15).toList(),
-          showSupportDialog: !supportDialogShown
+        organizationsResult: DelayedResult.success(mapped),
+        popularBrands: popular.take(15).toList(),
+        showSupportDialog: !supportDialogShown,
       );
     } on Exception catch (ex, st) {
       Fimber.e('Failed to load organizations', ex: ex, stacktrace: st);
@@ -136,21 +144,28 @@ class HomeBloc extends Bloc<HomeBlocEvent, HomeBlocState> {
   Stream<HomeBlocState> _mapSearchEventToState(SearchEvent event) async* {
     if (event.searchTerm.isEmpty) {
       yield state.copyWith(
-          searchTerm: event.searchTerm, searchResult: Optional.absent());
+        searchTerm: event.searchTerm,
+        searchResult: const Optional.absent(),
+      );
       return;
     }
 
     yield state.copyWith(
-        searchTerm: event.searchTerm,
-        searchResult: Optional.of(DelayedResult.inProgress()));
+      searchTerm: event.searchTerm,
+      searchResult: Optional.of(const DelayedResult.inProgress()),
+    );
 
     try {
       final results = await brandsRepository.search(event.searchTerm);
       yield state.copyWith(
-          searchResult: Optional.of(DelayedResult.success(results)));
+        searchResult: Optional.of(DelayedResult.success(results)),
+      );
     } on Exception catch (ex, st) {
-      Fimber.w('Failed to find brand: ${event.searchTerm}',
-          ex: ex, stacktrace: st);
+      Fimber.w(
+        'Failed to find brand: ${event.searchTerm}',
+        ex: ex,
+        stacktrace: st,
+      );
     }
   }
 }

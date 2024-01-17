@@ -21,7 +21,7 @@ class HomeOrganizationsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 16, right: 16),
+          padding: const EdgeInsets.only(left: 16, right: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -35,11 +35,11 @@ class HomeOrganizationsSection extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         OrganizationsList(
           organizations: organizations,
         ),
-        SizedBox(
+        const SizedBox(
           height: 40,
         ),
       ],
@@ -48,6 +48,7 @@ class HomeOrganizationsSection extends StatelessWidget {
 
   void _showAllOrganizations(BuildContext context) {
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => OrganizationsPage.withBloc()));
+      MaterialPageRoute(builder: (context) => OrganizationsPage.withBloc()),
+    );
   }
 }

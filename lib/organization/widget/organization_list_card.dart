@@ -9,22 +9,27 @@ import 'package:bunny_search/generated/locale_keys.g.dart';
 class OrganizationListCard extends StatelessWidget {
   final OrganizationDetails details;
 
-  OrganizationListCard({required this.details});
+  const OrganizationListCard({Key? key, required this.details})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => OrganizationBrandsPage.withBloc(details)));
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => OrganizationBrandsPage.withBloc(details),
+          ),
+        );
       },
       child: Container(
         height: 176,
         width: 148,
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         decoration: BoxDecoration(
-            border: Border.all(color: AppColors.border),
-            borderRadius: BorderRadius.circular(24)),
+          border: Border.all(color: AppColors.border),
+          borderRadius: BorderRadius.circular(24),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,15 +38,16 @@ class OrganizationListCard extends StatelessWidget {
               details.title,
               style: AppTypography.labelDark,
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
               LocaleKeys.organization_brands_count.tr(
-                  namedArgs: {'count': '${details.brandsCount}'}),
+                namedArgs: {'count': '${details.brandsCount}'},
+              ),
               style: AppTypography.caption,
             ),
-            Spacer(),
+            const Spacer(),
             Align(
               alignment: Alignment.bottomRight,
               child: Image.asset(

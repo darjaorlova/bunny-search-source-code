@@ -22,90 +22,96 @@ class HomeContentScreen extends StatelessWidget {
   final List<OrganizationDetails> organizations;
   final OnSearchTermChanged onSearchTermChanged;
 
-  const HomeContentScreen(
-      {Key? key,
-      required this.showProgress,
-      required this.showOrganizations,
-      required this.showPopularBrands,
-      required this.showSearchResults,
-      required this.searchBrands,
-      required this.popularBrands,
-      required this.organizations,
-      required this.onSearchTermChanged})
-      : super(key: key);
+  const HomeContentScreen({
+    Key? key,
+    required this.showProgress,
+    required this.showOrganizations,
+    required this.showPopularBrands,
+    required this.showSearchResults,
+    required this.searchBrands,
+    required this.popularBrands,
+    required this.organizations,
+    required this.onSearchTermChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
-            return [
-              SliverOverlapAbsorber(
+        headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+          return [
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverPersistentHeader(
+                delegate: SliverSearchAppBar(
+                  onSearchTermChanged: onSearchTermChanged,
+                ),
+                pinned: true,
+              ),
+            ),
+          ];
+        },
+        body: Builder(
+          builder: (BuildContext context) => CustomScrollView(
+            key: const ValueKey<String>('home_scroll_view'),
+            scrollBehavior: NoOverscrollBehavior(),
+            slivers: [
+              SliverOverlapInjector(
+                // This is the flip side of the SliverOverlapAbsorber
+                // above.
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverPersistentHeader(
-                  delegate: SliverSearchAppBar(
-                      onSearchTermChanged: onSearchTermChanged),
-                  pinned: true,
+              ),
+              SliverToBoxAdapter(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    if (showOrganizations)
+                      HomeOrganizationsSection(
+                        organizations: organizations,
+                      ),
+                    if (showPopularBrands) const HomePopularBrandsSection(),
+                    if (showSearchResults || showProgress)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 12,
+                        ),
+                        child: Text(
+                          LocaleKeys.home_results.tr(),
+                          style: AppTypography.headerMedium,
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    if (showProgress)
+                      const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.rose,
+                        ),
+                      )
+                  ],
                 ),
               ),
-            ];
-          },
-          body: Builder(
-            builder: (BuildContext context) => CustomScrollView(
-              scrollBehavior: NoOverscrollBehavior(),
-              slivers: [
-                SliverOverlapInjector(
-                  // This is the flip side of the SliverOverlapAbsorber
-                  // above.
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              if (!showProgress)
+                HomeBrandsList(
+                  brands: showSearchResults ? searchBrands : popularBrands,
                 ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        height: 12,
-                      ),
-                      if (showOrganizations)
-                        HomeOrganizationsSection(
-                          organizations: organizations,
-                        ),
-                      if (showPopularBrands) HomePopularBrandsSection(),
-                      if (showSearchResults || showProgress)
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 16, right: 16, bottom: 12),
-                          child: Text(
-                            LocaleKeys.home_results.tr(),
-                            style: AppTypography.headerMedium,
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                      if (showProgress)
-                        Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.rose,
-                          ),
-                        )
-                    ],
-                  ),
+              const SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 32,
                 ),
-                if (!showProgress)
-                  HomeBrandsList(
-                      brands: showSearchResults ? searchBrands : popularBrands),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 32,
-                  ),
-                )
-              ],
-            ),
-          )),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

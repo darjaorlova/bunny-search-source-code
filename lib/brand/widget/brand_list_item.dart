@@ -10,27 +10,32 @@ class BrandListItem extends StatelessWidget {
   final String filters;
   final String logoUrl;
 
-  BrandListItem(
-      {required this.title, required this.filters, required this.logoUrl});
+  const BrandListItem({
+    Key? key,
+    required this.title,
+    required this.filters,
+    required this.logoUrl,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+      margin: const EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             width: 72,
             height: 72,
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(20)),
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: Center(
               child: logoUrl.isEmpty
                   ? Text(
-                      '${title.substring(0, 1)}',
+                      title.substring(0, 1),
                       style: AppTypography.header
                           .copyWith(fontWeight: FontWeight.bold),
                     )
@@ -38,7 +43,7 @@ class BrandListItem extends StatelessWidget {
                       ? SvgPicture.network(
                           logoUrl,
                           placeholderBuilder: (context) => Text(
-                            '${title.substring(0, 1)}',
+                            title.substring(0, 1),
                             style: AppTypography.header
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
@@ -49,7 +54,7 @@ class BrandListItem extends StatelessWidget {
                         ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 16,
           ),
           Expanded(
@@ -67,7 +72,7 @@ class BrandListItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 4,
                 ),
                 Text(

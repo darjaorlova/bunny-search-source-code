@@ -15,16 +15,21 @@ class FirebaseOrganizationsRepository extends OrganizationsRepository {
           .reference()
           .child('organizations')
           .once()
-          .then((value) => List<dynamic>.from(
-                  Map<String, dynamic>.from(value.value).values)
-              .map((e) =>
-                  FirebaseOrganisation.fromJson(Map<String, dynamic>.from(e))
-                      .toOrganization())
-              .toList());
+          .then(
+            (value) => List<dynamic>.from(
+              Map<String, dynamic>.from(value.value).values,
+            )
+                .map(
+                  (e) => FirebaseOrganisation.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ).toOrganization(),
+                )
+                .toList(),
+          );
       return organizations;
     } catch (ex, st) {
       Fimber.e('Failed to load organizations', ex: ex, stacktrace: st);
-      throw ex;
+      rethrow;
     }
   }
 
@@ -48,16 +53,21 @@ class FirebaseOrganizationsRepository extends OrganizationsRepository {
           .child('brands')
           .child(id)
           .once()
-          .then((value) =>
-              List<dynamic>.from(Map<String, dynamic>.from(value.value).values)
-                  .map((e) => FirebaseOrganizationBrand.fromJson(
-                          Map<String, dynamic>.from(e))
-                      .toOrganizationBrand())
-                  .toList());
+          .then(
+            (value) => List<dynamic>.from(
+              Map<String, dynamic>.from(value.value).values,
+            )
+                .map(
+                  (e) => FirebaseOrganizationBrand.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ).toOrganizationBrand(),
+                )
+                .toList(),
+          );
       return brands;
     } catch (ex, st) {
       Fimber.e('Failed to load brands', ex: ex, stacktrace: st);
-      throw ex;
+      rethrow;
     }
   }
 
@@ -65,13 +75,13 @@ class FirebaseOrganizationsRepository extends OrganizationsRepository {
   Future<List<OrganizationBrand>> getBrandsByType(OrganizationType type) async {
     var mappedType = '';
     switch (type) {
-      case OrganizationType.PetaWhite:
+      case OrganizationType.petaWhite:
         mappedType = 'peta_white';
         break;
-      case OrganizationType.PetaBlack:
+      case OrganizationType.petaBlack:
         mappedType = 'peta_black';
         break;
-      case OrganizationType.BunnySearch:
+      case OrganizationType.bunnySearch:
         mappedType = 'bunny_search';
         break;
     }
@@ -81,16 +91,21 @@ class FirebaseOrganizationsRepository extends OrganizationsRepository {
           .child('brands')
           .child(mappedType)
           .once()
-          .then((value) =>
-              List<dynamic>.from(Map<String, dynamic>.from(value.value).values)
-                  .map((e) => FirebaseOrganizationBrand.fromJson(
-                          Map<String, dynamic>.from(e))
-                      .toOrganizationBrand())
-                  .toList());
+          .then(
+            (value) => List<dynamic>.from(
+              Map<String, dynamic>.from(value.value).values,
+            )
+                .map(
+                  (e) => FirebaseOrganizationBrand.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ).toOrganizationBrand(),
+                )
+                .toList(),
+          );
       return brands;
     } catch (ex, st) {
       Fimber.e('Failed to load brands', ex: ex, stacktrace: st);
-      throw ex;
+      rethrow;
     }
   }
 
@@ -102,16 +117,21 @@ class FirebaseOrganizationsRepository extends OrganizationsRepository {
           .child('brands')
           .child('popular')
           .once()
-          .then((value) =>
-              List<dynamic>.from(Map<String, dynamic>.from(value.value).values)
-                  .map((e) => FirebaseOrganizationBrand.fromJson(
-                          Map<String, dynamic>.from(e))
-                      .toOrganizationBrand())
-                  .toList());
+          .then(
+            (value) => List<dynamic>.from(
+              Map<String, dynamic>.from(value.value).values,
+            )
+                .map(
+                  (e) => FirebaseOrganizationBrand.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ).toOrganizationBrand(),
+                )
+                .toList(),
+          );
       return brands;
     } catch (ex, st) {
       Fimber.e('Failed to load brands', ex: ex, stacktrace: st);
-      throw ex;
+      rethrow;
     }
   }
 }

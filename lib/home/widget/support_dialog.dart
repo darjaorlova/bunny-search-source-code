@@ -20,10 +20,11 @@ class SupportDialog extends StatelessWidget {
             Text(
               LocaleKeys.home_support_dialog_content.tr(),
               style: AppTypography.description.copyWith(
-                  color: AppColors.accentBlack,
-                  fontWeight: FontWeight.normal,
-                  letterSpacing: 0.2,
-                  fontSize: 16),
+                color: AppColors.accentBlack,
+                fontWeight: FontWeight.normal,
+                letterSpacing: 0.2,
+                fontSize: 16,
+              ),
             ),
             const SizedBox(
               height: 16,
@@ -31,10 +32,11 @@ class SupportDialog extends StatelessWidget {
             Text(
               LocaleKeys.home_support_dialog_team.tr(),
               style: AppTypography.description.copyWith(
-                  color: AppColors.accentBlack,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.2,
-                  fontSize: 16),
+                color: AppColors.accentBlack,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.2,
+                fontSize: 16,
+              ),
             ),
           ],
         ),

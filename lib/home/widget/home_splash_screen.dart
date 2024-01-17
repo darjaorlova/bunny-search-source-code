@@ -12,7 +12,7 @@ class HomeSplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -24,11 +24,9 @@ class HomeSplashScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            child: Image.asset(
-              ImagesProvider.SEARCH_BUNNY,
-              width: MediaQuery.of(context).size.width / 3,
-            ),
+          Image.asset(
+            ImagesProvider.SEARCH_BUNNY,
+            width: MediaQuery.of(context).size.width / 3,
           ),
           const SizedBox(
             height: 20,
@@ -36,11 +34,12 @@ class HomeSplashScreen extends StatelessWidget {
           Text(
             LocaleKeys.splash_loading_brands.tr(),
             style: AppTypography.regular.copyWith(
-                color: AppColors.white,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.5,
-                fontSize: 18,
-                decorationColor: AppColors.white.withOpacity(0.01)),
+              color: AppColors.white,
+              fontWeight: FontWeight.w400,
+              letterSpacing: 0.5,
+              fontSize: 18,
+              decorationColor: AppColors.white.withOpacity(0.01),
+            ),
           )
         ],
       ),

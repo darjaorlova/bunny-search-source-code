@@ -1,3 +1,1 @@
-enum OrganizationType {
-  PetaWhite, PetaBlack, BunnySearch
-}
+enum OrganizationType { petaWhite, petaBlack, bunnySearch }
