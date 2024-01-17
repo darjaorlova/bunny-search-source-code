@@ -12,19 +12,21 @@ class OrganizationEntity extends Equatable {
   final int brandsCount;
   final String website;
 
-  OrganizationEntity(
-      {this.id,
-      required this.orgId,
-      required this.type,
-      required this.brandsCount,
-      required this.website});
+  const OrganizationEntity({
+    this.id,
+    required this.orgId,
+    required this.type,
+    required this.brandsCount,
+    required this.website,
+  });
 
   Organization toOrganization() {
     return Organization(
-        id: orgId,
-        type: _typeFromString(type),
-        brandsCount: brandsCount,
-        website: website);
+      id: orgId,
+      type: _typeFromString(type),
+      brandsCount: brandsCount,
+      website: website,
+    );
   }
 
   @override
@@ -34,11 +36,11 @@ class OrganizationEntity extends Equatable {
 OrganizationType _typeFromString(String type) {
   switch (type) {
     case 'peta_white':
-      return OrganizationType.PetaWhite;
+      return OrganizationType.petaWhite;
     case 'peta_black':
-      return OrganizationType.PetaBlack;
+      return OrganizationType.petaBlack;
     case 'bunny_search':
-      return OrganizationType.BunnySearch;
+      return OrganizationType.bunnySearch;
   }
   throw StateError('Unknown type: $type');
 }

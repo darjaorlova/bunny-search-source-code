@@ -22,7 +22,7 @@ class PopularBrandsPage extends StatefulWidget {
   static Widget withBloc() => BlocProvider(
         create: (context) => PopularBrandBloc(brandsRepository: context.read())
           ..add(LoadBrandsEvent()),
-        child: PopularBrandsPage(),
+        child: const PopularBrandsPage(),
       );
 }
 
@@ -38,76 +38,86 @@ class _PopularBrandsPageState extends State<PopularBrandsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PopularBrandBloc, PopularBrandsState>(
-        listener: (context, state) {
-      final isError = state.brandsResult.isError == true;
-      if (isError) {
-        _handleError();
-      }
-    }, builder: (context, state) {
-      final progress = state.brandsResult.isInProgress;
-      final brands =
-          state.brandsResult.isSuccessful ? state.brandsResult.value ?? [] : [];
-      return Scaffold(
-        backgroundColor: AppColors.white,
-        appBar: AppBar(
-          centerTitle: true,
+      listener: (context, state) {
+        final isError = state.brandsResult.isError == true;
+        if (isError) {
+          _handleError();
+        }
+      },
+      builder: (context, state) {
+        final progress = state.brandsResult.isInProgress;
+        final brands = state.brandsResult.isSuccessful
+            ? state.brandsResult.value ?? []
+            : [];
+        return Scaffold(
           backgroundColor: AppColors.white,
-          elevation: 0,
-          leading: BunnyAppBarBackButton(),
-          title: Column(
-            children: [
-              Text(
-                LocaleKeys.popular_brands_title.tr(),
-                style: AppTypography.h4,
-              ),
-            ],
-          ),
-        ),
-        body: progress
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.rose,
+          appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            leading: const BunnyAppBarBackButton(),
+            title: Column(
+              children: [
+                Text(
+                  LocaleKeys.popular_brands_title.tr(),
+                  style: AppTypography.h4,
                 ),
-              )
-            : SafeArea(
-                child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 24),
-                  itemBuilder: (context, pos) {
-                    Brand brand = brands[pos];
-                    return TextButton(
-                      style: ButtonStyle(
+              ],
+            ),
+          ),
+          body: progress
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.rose,
+                  ),
+                )
+              : SafeArea(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    itemBuilder: (context, pos) {
+                      Brand brand = brands[pos];
+                      return TextButton(
+                        style: ButtonStyle(
                           overlayColor: MaterialStateProperty.all(
-                              AppColors.rose.withOpacity(0.05))),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                BrandDetailsPage(brand: brand)));
-                      },
-                      child: BrandListItem(
+                            AppColors.rose.withOpacity(0.05),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  BrandDetailsPage(brand: brand),
+                            ),
+                          );
+                        },
+                        child: BrandListItem(
                           title: brand.title,
                           filters: _buildFiltersString(
-                              brand.organizations.values.toList()),
-                          logoUrl: brand.logoUrl ?? ''),
-                    );
-                  },
-                  itemCount: brands.length,
+                            brand.organizations.values.toList(),
+                          ),
+                          logoUrl: brand.logoUrl ?? '',
+                        ),
+                      );
+                    },
+                    itemCount: brands.length,
+                  ),
                 ),
-              ),
-      );
-    });
+        );
+      },
+    );
   }
 
   String _buildFiltersString(List<Organization> organizations) {
-    return '${organizations.map((o) => _organizationTypeToString(o.type)).join(' • ')}';
+    return organizations.map((o) => _organizationTypeToString(o.type)).join(' • ');
   }
 
   String _organizationTypeToString(OrganizationType type) {
     switch (type) {
-      case OrganizationType.PetaWhite:
+      case OrganizationType.petaWhite:
         return LocaleKeys.organization_peta_dont_test.tr();
-      case OrganizationType.PetaBlack:
+      case OrganizationType.petaBlack:
         return LocaleKeys.organization_peta_do_test.tr();
-      case OrganizationType.BunnySearch:
+      case OrganizationType.bunnySearch:
         return LocaleKeys.organization_bunny_search.tr();
     }
   }
@@ -115,8 +125,9 @@ class _PopularBrandsPageState extends State<PopularBrandsPage> {
   void _handleError() {
     ScaffoldMessenger.of(context).showSnackBar(
       BunnyDefaultSnackBar(
-          text: LocaleKeys.general_error.tr(),
-          onRetry: () => _bloc.add(LoadBrandsEvent())),
+        text: LocaleKeys.general_error.tr(),
+        onRetry: () => _bloc.add(LoadBrandsEvent()),
+      ),
     );
   }
 }

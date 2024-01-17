@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _AppState();
 }
@@ -25,14 +27,17 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         locale: easyLocalization.locale,
         home: HomePage.withBloc(),
         theme: ThemeData(
+          useMaterial3: false,
           cupertinoOverrideTheme: CupertinoThemeData().copyWith(
-              primaryColor: AppColors.rose,
-              textTheme: CupertinoTextThemeData()
-                  .copyWith(primaryColor: AppColors.rose)),
+            primaryColor: AppColors.rose,
+            textTheme:
+                CupertinoTextThemeData().copyWith(primaryColor: AppColors.rose),
+          ),
           textSelectionTheme: TextSelectionThemeData(
-              cursorColor: AppColors.rose,
-              selectionColor: AppColors.rose.withOpacity(0.5),
-              selectionHandleColor: AppColors.rose.withOpacity(0.5)),
+            cursorColor: AppColors.rose,
+            selectionColor: AppColors.rose.withOpacity(0.5),
+            selectionHandleColor: AppColors.rose.withOpacity(0.5),
+          ),
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: AppColors.rose,
             secondary: AppColors.inactive,
@@ -43,12 +48,14 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           switch (settings.name) {
             case AppRoutes.root:
               return MaterialPageRoute(
-                  settings: const RouteSettings(name: AppRoutes.root),
-                  builder: (settings) => _PlaceholderContainer());
+                settings: const RouteSettings(name: AppRoutes.root),
+                builder: (settings) => _PlaceholderContainer(),
+              );
             default:
               return MaterialPageRoute(
-                  settings: const RouteSettings(name: AppRoutes.root),
-                  builder: (settings) => _PlaceholderContainer());
+                settings: const RouteSettings(name: AppRoutes.root),
+                builder: (settings) => _PlaceholderContainer(),
+              );
           }
         },
       ),
@@ -62,13 +69,15 @@ class _PlaceholderContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [Color(0xFFD8CCFF), Color(0xFFA3E3FF)],
           tileMode: TileMode.clamp,
-        )));
+        ),
+      ),
+    );
   }
 }

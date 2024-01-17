@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 # navigate to repo root from /resources/scripts
 cd ../..

@@ -8,25 +8,28 @@ class Brand extends Equatable {
   final bool? hasVeganProducts;
   final String? logoUrl;
 
-  Brand(
-      {required this.title,
-      required this.description,
-      required this.organizations,
-      required this.hasVeganProducts,
-      required this.logoUrl});
+  const Brand({
+    required this.title,
+    required this.description,
+    required this.organizations,
+    required this.hasVeganProducts,
+    required this.logoUrl,
+  });
 
-  Brand copyWith(
-          {String? title,
-          String? description,
-          Map<String, Organization>? organizations,
-          bool? hasVeganProducts,
-          String? logoUrl}) =>
+  Brand copyWith({
+    String? title,
+    String? description,
+    Map<String, Organization>? organizations,
+    bool? hasVeganProducts,
+    String? logoUrl,
+  }) =>
       Brand(
-          title: title ?? this.title,
-          description: description ?? this.description,
-          organizations: organizations ?? this.organizations,
-          hasVeganProducts: hasVeganProducts ?? this.hasVeganProducts,
-          logoUrl: logoUrl);
+        title: title ?? this.title,
+        description: description ?? this.description,
+        organizations: organizations ?? this.organizations,
+        hasVeganProducts: hasVeganProducts ?? this.hasVeganProducts,
+        logoUrl: logoUrl,
+      );
 
   @override
   List<Object?> get props =>

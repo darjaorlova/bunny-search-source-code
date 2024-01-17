@@ -9,7 +9,8 @@ typedef OnSearchTermChanged = Function(String searchTerm);
 class SearchBar extends StatefulWidget {
   final OnSearchTermChanged onSearchTermChanged;
 
-  SearchBar({required this.onSearchTermChanged});
+  const SearchBar({Key? key, required this.onSearchTermChanged})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SearchBarState();
@@ -27,18 +28,20 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 16, top: 0),
+      margin: const EdgeInsets.only(left: 16, top: 0),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.white,
-            border: Border.all(color: Color(0xFFF2F2F7), width: 0.5),
-            boxShadow: [
-              BoxShadow(
-                  color: Color(0xFFDFE9F5).withOpacity(0.25),
-                  blurRadius: 15,
-                  offset: Offset(0, 2))
-            ]),
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFF2F2F7), width: 0.5),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFDFE9F5).withOpacity(0.25),
+              blurRadius: 15,
+              offset: const Offset(0, 2),
+            )
+          ],
+        ),
         width: MediaQuery.of(context).size.width - 32,
         // TODO: icon color on focus / not empty controller
         child: TextFormField(
@@ -50,14 +53,14 @@ class _SearchBarState extends State<SearchBar> {
             hintText: LocaleKeys.home_search_hint.tr(),
             hintStyle:
                 AppTypography.regular.copyWith(color: AppColors.inactive),
-            contentPadding: EdgeInsets.only(top: 20, bottom: 20),
+            contentPadding: const EdgeInsets.only(top: 20, bottom: 20),
             focusColor: AppColors.rose,
-            prefixIcon: Icon(
+            prefixIcon: const Icon(
               Icons.search,
               color: AppColors.inactive,
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 0.5, color: AppColors.rose),
+              borderSide: const BorderSide(width: 0.5, color: AppColors.rose),
               borderRadius: BorderRadius.circular(12),
             ),
             focusedErrorBorder: InputBorder.none,

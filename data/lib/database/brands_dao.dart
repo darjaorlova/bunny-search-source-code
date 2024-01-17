@@ -15,7 +15,8 @@ abstract class BrandsDao {
   Future<List<OrganizationEntity>> getAllOrganizations();
 
   @Query(
-      'SELECT * FROM brands WHERE title IN (SELECT brand_title FROM brands_with_organizations WHERE org_id = :orgId)')
+    'SELECT * FROM brands WHERE title IN (SELECT brand_title FROM brands_with_organizations WHERE org_id = :orgId)',
+  )
   Future<List<BrandEntity>> getAllOrganizationBrands(String orgId);
 
   @Query('SELECT * FROM brands WHERE title LIKE :query')
@@ -26,7 +27,8 @@ abstract class BrandsDao {
 
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertBrandsWithOrganizations(
-      List<BrandWithOrganizationEntity> brands);
+    List<BrandWithOrganizationEntity> brands,
+  );
 
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertOrganizations(List<OrganizationEntity> organizations);
@@ -42,9 +44,10 @@ abstract class BrandsDao {
 
   @transaction
   Future<void> updateBrands(
-      List<BrandEntity> brands,
-      List<BrandWithOrganizationEntity> brandsWithOrgz,
-      List<OrganizationEntity> orgz) {
+    List<BrandEntity> brands,
+    List<BrandWithOrganizationEntity> brandsWithOrgz,
+    List<OrganizationEntity> orgz,
+  ) {
     deleteAllBrands();
     deleteAllOrganizations();
     deleteAllBrandsWithOrganizations();

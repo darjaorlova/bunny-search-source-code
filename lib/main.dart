@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bunny_search/analytics/bloc_error_delegate.dart';
 import 'package:bunny_search/app.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data/brands/persisted_brands_repository.dart';
 import 'package:data/organizations/repository/assets_organizations_repository.dart';
 import 'package:data/storage/shared_preferences_key_value_storage.dart';
@@ -24,6 +25,8 @@ void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await EasyLocalization.ensureInitialized();
+
+    CachedNetworkImage.logLevel = CacheManagerLogLevel.warning;
 
     Bloc.observer = BlocErrorObserver();
 
@@ -48,26 +51,33 @@ void main() {
 
     final keyValueStorage = SharedPreferencesKeyValueStorage(sharedPrefs);
 
-    runApp(MultiRepositoryProvider(
+    runApp(
+      MultiRepositoryProvider(
         providers: [
           RepositoryProvider<OrganizationsRepository>(
             create: (context) => orgRepo,
           ),
           RepositoryProvider<KeyValueStorage>(
-              create: (context) => keyValueStorage),
+            create: (context) => keyValueStorage,
+          ),
           RepositoryProvider<BrandsRepository>(
-              create: (context) => PersistedBrandsRepository(
-                  organizationsRepository: orgRepo,
-                  storage: keyValueStorage,
-                  dao: database.brandsDao))
+            create: (context) => PersistedBrandsRepository(
+              organizationsRepository: orgRepo,
+              storage: keyValueStorage,
+              dao: database.brandsDao,
+            ),
+          )
         ],
         child: EasyLocalization(
-            fallbackLocale: const Locale('ru'),
-            useOnlyLangCode: true,
-            path: 'resources/langs',
-            supportedLocales: [const Locale('ru'), const Locale('en')],
-            assetLoader: const CodegenLoader(),
-            child: App())));
+          fallbackLocale: const Locale('ru'),
+          useOnlyLangCode: true,
+          path: 'resources/langs',
+          supportedLocales: const [Locale('ru'), Locale('en')],
+          assetLoader: const CodegenLoader(),
+          child: const App(),
+        ),
+      ),
+    );
   }, (error, stackTrace) {
     /** Used in real app **/
     //FirebaseCrashlytics.instance.recordError(error, stackTrace);

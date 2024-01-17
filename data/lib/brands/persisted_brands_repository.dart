@@ -10,6 +10,8 @@ import 'package:domain/organizations/model/organization_brand.dart';
 import 'package:domain/organizations/model/organization_type.dart';
 import 'package:domain/organizations/repository/organizations_repository.dart';
 import 'package:domain/storage/key_value_storage.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fimber/fimber.dart';
 
 const _KEY_DB_VERSION = 'key_local_db_version';
@@ -47,7 +49,7 @@ class PersistedBrandsRepository extends BrandsRepository {
       // try to load from internet
       try {
         // 0. Get all popular (currently only PETA white)
-        final popular = await organizationsRepository.getPopular();
+        final popularFuture = organizationsRepository.getPopular();
 
         // 1. Get all remote organizations
         final organizations = await organizationsRepository.getAll();
@@ -87,25 +89,35 @@ class PersistedBrandsRepository extends BrandsRepository {
             mappedOrgz[organization.id] = organization;
           }
 
-          OrganizationBrand? possiblePopular = popular.firstWhereOrNull((b) =>
-              b.title.trim().toLowerCase() == info.title.trim().toLowerCase());
+          final popular = await popularFuture;
+          OrganizationBrand? possiblePopular = popular.firstWhereOrNull(
+            (b) =>
+                b.title.trim().toLowerCase() == info.title.trim().toLowerCase(),
+          );
 
-          brandEntities.add(BrandEntity(
-              title: info.title,
-              description: '',
-              popular: possiblePopular != null,
-              organizationsIds: mappedOrgz.keys.toList(),
-              hasVeganProducts: info.hasVeganProducts,
-              logoUrl: possiblePopular?.logoUrl ?? info.logoUrl));
+          brandEntities.add(
+            BrandEntity(
+                title: info.title,
+                description: '',
+                popular: possiblePopular != null,
+                organizationsIds: mappedOrgz.keys.toList(),
+                hasVeganProducts: info.hasVeganProducts,
+                logoUrl: possiblePopular?.logoUrl ?? info.logoUrl),
+          );
 
           mappedOrgz.forEach((key, org) {
-            brandsWithOrgzEntities.add(BrandWithOrganizationEntity(
-                brandTitle: info.title, orgId: org.id));
-            orgzEntities.add(OrganizationEntity(
+            brandsWithOrgzEntities.add(
+              BrandWithOrganizationEntity(
+                  brandTitle: info.title, orgId: org.id),
+            );
+            orgzEntities.add(
+              OrganizationEntity(
                 orgId: org.id,
                 type: typeToString(org.type),
                 brandsCount: org.brandsCount,
-                website: org.website));
+                website: org.website,
+              ),
+            );
           });
         }
 
@@ -125,11 +137,11 @@ class PersistedBrandsRepository extends BrandsRepository {
 
   static String typeToString(OrganizationType type) {
     switch (type) {
-      case OrganizationType.PetaWhite:
+      case OrganizationType.petaWhite:
         return 'peta_white';
-      case OrganizationType.PetaBlack:
+      case OrganizationType.petaBlack:
         return 'peta_black';
-      case OrganizationType.BunnySearch:
+      case OrganizationType.bunnySearch:
         return 'bunny_search';
     }
   }
@@ -139,9 +151,12 @@ class PersistedBrandsRepository extends BrandsRepository {
     final allOrgz = await dao.getAllOrganizations();
     final mappedOrgz =
         allOrgz.asMap().map((key, value) => MapEntry(value.orgId, value));
-    final allBrandEntities = await dao.findBrands('%$searchTerm%');
-    return allBrandEntities
-        .map((b) => Brand(
+    final allBrandEntities = await dao.getAllBrands();
+    final filtered =
+        await compute(_search, SearchQuery(allBrandEntities, searchTerm));
+    return filtered
+        .map(
+          (b) => Brand(
             title: b.title,
             description: b.description,
             hasVeganProducts: b.hasVeganProducts,
@@ -149,8 +164,68 @@ class PersistedBrandsRepository extends BrandsRepository {
             organizations: b.organizationsIds.asMap().map((key, o) {
               final org = mappedOrgz[o]!.toOrganization();
               return MapEntry(o, org);
-            })))
+            }),
+          ),
+        )
         .toList();
+  }
+
+  static List<BrandEntity> _search(SearchQuery query) {
+    final searchTerm = query.query.toLowerCase();
+    final filtered = query.allBrands.where((b) {
+      final title = b.title.toLowerCase();
+      if (title.contains(searchTerm)) {
+        return true;
+      }
+      final nameDistance = _levenshteinDistance(title, searchTerm);
+      if (title.length >= 3 && nameDistance <= 1) {
+        return true;
+      } else if (title.length > 5 && nameDistance <= 2) {
+        return true;
+      } else if (title.length > 7 && nameDistance <= 4) {
+        return true;
+      } else {
+        return false;
+      }
+    }).toList();
+    return filtered;
+  }
+
+  static int _levenshteinDistance(String a, String b) {
+    if (a == b) {
+      return 0;
+    }
+    if (a.isEmpty) {
+      return b.length;
+    }
+    if (b.isEmpty) {
+      return a.length;
+    }
+
+    List<List<int>> matrix = List.generate(b.length + 1,
+        (i) => List.generate(a.length + 1, (j) => j, growable: false),
+        growable: false);
+
+    for (int i = 1; i <= b.length; i++) {
+      matrix[i][0] = i;
+    }
+
+    for (int i = 1; i <= b.length; i++) {
+      for (int j = 1; j <= a.length; j++) {
+        int substitutionCost = (a[j - 1] == b[i - 1]) ? 0 : 1;
+        matrix[i][j] = _min(
+          matrix[i - 1][j] + 1, // deletion
+          matrix[i][j - 1] + 1, // insertion
+          matrix[i - 1][j - 1] + substitutionCost, // substitution
+        );
+      }
+    }
+
+    return matrix[b.length][a.length];
+  }
+
+  static int _min(int a, int b, int c) {
+    return (a < b) ? (a < c ? a : c) : (b < c ? b : c);
   }
 
   @override
@@ -159,11 +234,14 @@ class PersistedBrandsRepository extends BrandsRepository {
     final mappedOrgz =
         allOrgz.asMap().map((key, value) => MapEntry(value.orgId, value));
     return mappedOrgz.values
-        .map((o) => Organization(
+        .map(
+          (o) => Organization(
             id: o.orgId,
             type: stringToType(o.type)!, // TODO
             brandsCount: o.brandsCount,
-            website: o.website))
+            website: o.website,
+          ),
+        )
         .toList();
   }
 
@@ -176,7 +254,8 @@ class PersistedBrandsRepository extends BrandsRepository {
     final id = allOrgz.firstWhere((o) => o.type == stringType).orgId;
     final allBrandEntities = await dao.getAllOrganizationBrands(id);
     return allBrandEntities
-        .map((b) => Brand(
+        .map(
+          (b) => Brand(
             title: b.title,
             description: b.description,
             hasVeganProducts: b.hasVeganProducts,
@@ -184,18 +263,20 @@ class PersistedBrandsRepository extends BrandsRepository {
             organizations: b.organizationsIds.asMap().map((key, o) {
               final org = mappedOrgz[o]!.toOrganization();
               return MapEntry(o, org);
-            })))
+            }),
+          ),
+        )
         .toList();
   }
 
   static OrganizationType? stringToType(String type) {
     switch (type) {
       case 'peta_white':
-        return OrganizationType.PetaWhite;
+        return OrganizationType.petaWhite;
       case 'peta_black':
-        return OrganizationType.PetaBlack;
+        return OrganizationType.petaBlack;
       case 'bunny_search':
-        return OrganizationType.BunnySearch;
+        return OrganizationType.bunnySearch;
     }
     return null;
   }
@@ -207,7 +288,8 @@ class PersistedBrandsRepository extends BrandsRepository {
         allOrgz.asMap().map((key, value) => MapEntry(value.orgId, value));
     final allBrandEntities = await dao.getAllPopularBrands();
     return allBrandEntities
-        .map((b) => Brand(
+        .map(
+          (b) => Brand(
             title: b.title,
             description: b.description,
             hasVeganProducts: b.hasVeganProducts,
@@ -215,7 +297,22 @@ class PersistedBrandsRepository extends BrandsRepository {
             organizations: b.organizationsIds.asMap().map((key, o) {
               final org = mappedOrgz[o]!.toOrganization();
               return MapEntry(o, org);
-            })))
+            }),
+          ),
+        )
         .toList();
   }
+}
+
+class SearchQuery extends Equatable {
+  final List<BrandEntity> allBrands;
+  final String query;
+
+  const SearchQuery(this.allBrands, this.query);
+
+  @override
+  List<Object?> get props => [
+        allBrands,
+        query,
+      ];
 }

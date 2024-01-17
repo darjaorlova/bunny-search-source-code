@@ -12,5 +12,4 @@ class ListTypeConverter extends TypeConverter<List<String>, String> {
   String encode(List<String> value) {
     return jsonEncode(value);
   }
-
 }

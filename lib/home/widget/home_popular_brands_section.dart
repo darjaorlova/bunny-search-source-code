@@ -11,7 +11,7 @@ class HomePopularBrandsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, bottom: 12),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -27,6 +27,7 @@ class HomePopularBrandsSection extends StatelessWidget {
 
   void _showAllPopularBrands(BuildContext context) {
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => PopularBrandsPage.withBloc()));
+      MaterialPageRoute(builder: (context) => PopularBrandsPage.withBloc()),
+    );
   }
 }

@@ -25,7 +25,7 @@ class DelayedResult<T> extends Equatable {
 
   DelayedResult<R> map<R>(R Function(T val) f) {
     if (isSuccessful) {
-      return DelayedResult<R>.success(f(result!.value!));
+      return DelayedResult<R>.success(f(result!.value as T));
     } else if (isError) {
       return DelayedResult<R>.error(result!.exception!);
     }

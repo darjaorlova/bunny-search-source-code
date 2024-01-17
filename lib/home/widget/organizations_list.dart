@@ -10,14 +10,14 @@ class OrganizationsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 176,
       child: ListView.separated(
-        physics: ClampingScrollPhysics(),
-        separatorBuilder: (context, pos) => SizedBox(
+        physics: const ClampingScrollPhysics(),
+        separatorBuilder: (context, pos) => const SizedBox(
           width: 16,
         ),
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemBuilder: (context, pos) {
           return OrganizationListCard(details: organizations[pos]);
         },

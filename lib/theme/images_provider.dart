@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+// TODO: Refactor to codegen eventually
 class ImagesProvider {
   static const BASE_PATH = 'resources/images';
   static const BACKGROUND = '$BASE_PATH/background.png';

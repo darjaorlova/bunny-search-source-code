@@ -1,0 +1,10 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - [ build/** ]
+    - data/lib/**/*.g.dart #TODO and other codegen places
+
+linter:
+  rules:
+    - require_trailing_commas

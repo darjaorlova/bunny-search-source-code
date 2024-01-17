@@ -9,13 +9,14 @@ class OrganizationBrand extends Equatable {
   final bool? hasVeganProducts;
   final String? logoUrl;
 
-  const OrganizationBrand(
-      {required this.id,
-      required this.title,
-      required this.organizationType,
-      required this.organizationWebsite,
-      required this.hasVeganProducts,
-      required this.logoUrl});
+  const OrganizationBrand({
+    required this.id,
+    required this.title,
+    required this.organizationType,
+    required this.organizationWebsite,
+    required this.hasVeganProducts,
+    required this.logoUrl,
+  });
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
@@ -39,11 +40,11 @@ class OrganizationBrand extends Equatable {
 
 String _toOrganizationTypeString(OrganizationType type) {
   switch (type) {
-    case OrganizationType.PetaWhite:
+    case OrganizationType.petaWhite:
       return 'peta_white';
-    case OrganizationType.PetaBlack:
+    case OrganizationType.petaBlack:
       return 'peta_black';
-    case OrganizationType.BunnySearch:
+    case OrganizationType.bunnySearch:
       return 'bunny_search';
   }
 }

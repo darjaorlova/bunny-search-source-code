@@ -26,15 +26,19 @@ class OrganizationBrandsState extends Equatable {
   final OrganizationType? organizationType;
   final DelayedResult<List<Brand>> brandsResult;
 
-  const OrganizationBrandsState(
-      {required this.organizationType, required this.brandsResult});
+  const OrganizationBrandsState({
+    required this.organizationType,
+    required this.brandsResult,
+  });
 
-  OrganizationBrandsState copyWith(
-          {OrganizationType? organizationType,
-          DelayedResult<List<Brand>>? brandsResult}) =>
+  OrganizationBrandsState copyWith({
+    OrganizationType? organizationType,
+    DelayedResult<List<Brand>>? brandsResult,
+  }) =>
       OrganizationBrandsState(
-          organizationType: organizationType ?? this.organizationType,
-          brandsResult: brandsResult ?? this.brandsResult);
+        organizationType: organizationType ?? this.organizationType,
+        brandsResult: brandsResult ?? this.brandsResult,
+      );
 
   @override
   List<Object?> get props => [organizationType, brandsResult];
@@ -45,27 +49,34 @@ class OrganizationBrandBloc
   final BrandsRepository brandsRepository;
 
   OrganizationBrandBloc({required this.brandsRepository})
-      : super(OrganizationBrandsState(
-            organizationType: null, brandsResult: DelayedResult.inProgress()));
+      : super(
+          const OrganizationBrandsState(
+            organizationType: null,
+            brandsResult: DelayedResult.inProgress(),
+          ),
+        );
 
   @override
   Stream<OrganizationBrandsState> mapEventToState(
-      OrganizationBrandsBlocEvent event) async* {
+    OrganizationBrandsBlocEvent event,
+  ) async* {
     if (event is LoadBrandsEvent) {
       yield* _mapLoadBrandsEventToState(event);
     }
   }
 
   Stream<OrganizationBrandsState> _mapLoadBrandsEventToState(
-      LoadBrandsEvent event) async* {
-    yield state.copyWith(brandsResult: DelayedResult.inProgress());
+    LoadBrandsEvent event,
+  ) async* {
+    yield state.copyWith(brandsResult: const DelayedResult.inProgress());
 
     try {
       final brands = await brandsRepository
           .getBrandsByOrganizationType(event.organizationType);
       yield state.copyWith(
-          organizationType: event.organizationType,
-          brandsResult: DelayedResult.success(brands));
+        organizationType: event.organizationType,
+        brandsResult: DelayedResult.success(brands),
+      );
     } on Exception catch (ex, st) {
       Fimber.e('Failed to load org brands', ex: ex, stacktrace: st);
       yield state.copyWith(brandsResult: DelayedResult.error(ex));

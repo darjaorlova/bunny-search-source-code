@@ -14,8 +14,14 @@ class BackgroundWaveClipper extends CustomClipper<Path> {
     final firstControlPoint = Offset(-100, size.height - p3Diff);
     final p4Diff = ((140 - size.height) * 0.575).abs();
     final secondControlPoint = Offset(size.width / 2.5, size.height + p4Diff);
-    path.cubicTo(firstControlPoint.dx, firstControlPoint.dy,
-        secondControlPoint.dx, secondControlPoint.dy, endPoint.dx, endPoint.dy);
+    path.cubicTo(
+      firstControlPoint.dx,
+      firstControlPoint.dy,
+      secondControlPoint.dx,
+      secondControlPoint.dy,
+      endPoint.dx,
+      endPoint.dy,
+    );
     path.lineTo(size.width, 0.0);
 
     path.close();
