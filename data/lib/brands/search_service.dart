@@ -17,16 +17,26 @@ class SearchService {
   @visibleForTesting
   static List<BrandEntity> searchSync(SearchQuery query) {
     final searchTerm = query.query.toLowerCase();
-    final filtered = query.allBrands.where((b) {
-      final title = b.title.toLowerCase();
+    final filtered = query.allBrands.expand<SearchResult>((brand) {
+      final title = brand.title.toLowerCase();
+      if (title == searchTerm) {
+        return [SearchResult(0, brand)];
+      }
       if (title.contains(searchTerm)) {
-        return true;
+        return [SearchResult(1, brand)];
       }
       final maxDistance = title.length > 7 ? 4 : 2;
       final nameDistance = levenshteinDistance(title, searchTerm, maxDistance);
-      return nameDistance <= maxDistance;
+      if (nameDistance <= maxDistance) {
+        return [SearchResult(nameDistance, brand)];
+      } else {
+        return [];
+      }
     }).toList();
-    return filtered;
+    filtered.sort((a, b) {
+      return a.distance.compareTo(b.distance);
+    });
+    return filtered.map((result) => result.brand).toList();
   }
 
   @visibleForTesting
@@ -97,6 +107,7 @@ class SearchService {
   }
 }
 
+// TODO: Update to Dart 3 & use records
 class SearchQuery extends Equatable {
   final List<BrandEntity> allBrands;
   final String query;
@@ -107,5 +118,18 @@ class SearchQuery extends Equatable {
   List<Object?> get props => [
         allBrands,
         query,
+      ];
+}
+
+class SearchResult extends Equatable {
+  final int distance;
+  final BrandEntity brand;
+
+  const SearchResult(this.distance, this.brand);
+
+  @override
+  List<Object?> get props => [
+        distance,
+        brand,
       ];
 }
