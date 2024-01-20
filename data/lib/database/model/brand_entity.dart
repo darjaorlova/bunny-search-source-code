@@ -29,6 +29,6 @@ class BrandEntity extends Equatable {
         organizationsIds,
         hasVeganProducts,
         logoUrl,
-        popular
+        popular,
       ];
 }

@@ -5,6 +5,7 @@ import 'package:bunny_search/analytics/bloc_error_delegate.dart';
 import 'package:bunny_search/app.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data/brands/persisted_brands_repository.dart';
+import 'package:data/brands/search_service.dart';
 import 'package:data/organizations/repository/assets_organizations_repository.dart';
 import 'package:data/storage/shared_preferences_key_value_storage.dart';
 import 'package:domain/brands/repository/brands_repository.dart';
@@ -54,6 +55,9 @@ void main() {
     runApp(
       MultiRepositoryProvider(
         providers: [
+          RepositoryProvider<SearchService>(
+            create: (context) => SearchService(),
+          ),
           RepositoryProvider<OrganizationsRepository>(
             create: (context) => orgRepo,
           ),
@@ -65,6 +69,7 @@ void main() {
               organizationsRepository: orgRepo,
               storage: keyValueStorage,
               dao: database.brandsDao,
+              searchService: context.read(),
             ),
           )
         ],

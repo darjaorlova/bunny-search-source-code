@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:data/brands/search_service.dart';
 import 'package:data/database/brands_dao.dart';
 import 'package:data/database/model/brand_entity.dart';
 import 'package:data/database/model/brand_with_organization_entity.dart';
@@ -10,8 +11,6 @@ import 'package:domain/organizations/model/organization_brand.dart';
 import 'package:domain/organizations/model/organization_type.dart';
 import 'package:domain/organizations/repository/organizations_repository.dart';
 import 'package:domain/storage/key_value_storage.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:fimber/fimber.dart';
 
 const _KEY_DB_VERSION = 'key_local_db_version';
@@ -20,11 +19,14 @@ class PersistedBrandsRepository extends BrandsRepository {
   final KeyValueStorage storage;
   final OrganizationsRepository organizationsRepository;
   final BrandsDao dao;
+  final SearchService searchService;
 
-  PersistedBrandsRepository(
-      {required this.organizationsRepository,
-      required this.storage,
-      required this.dao});
+  PersistedBrandsRepository({
+    required this.organizationsRepository,
+    required this.storage,
+    required this.dao,
+    required this.searchService,
+  });
 
   @override
   Future<void> loadAllBrands() async {
@@ -152,8 +154,10 @@ class PersistedBrandsRepository extends BrandsRepository {
     final mappedOrgz =
         allOrgz.asMap().map((key, value) => MapEntry(value.orgId, value));
     final allBrandEntities = await dao.getAllBrands();
-    final filtered =
-        await compute(_search, SearchQuery(allBrandEntities, searchTerm));
+    final filtered = await searchService.search(
+      allBrands: allBrandEntities,
+      query: searchTerm,
+    );
     return filtered
         .map(
           (b) => Brand(
@@ -168,64 +172,6 @@ class PersistedBrandsRepository extends BrandsRepository {
           ),
         )
         .toList();
-  }
-
-  static List<BrandEntity> _search(SearchQuery query) {
-    final searchTerm = query.query.toLowerCase();
-    final filtered = query.allBrands.where((b) {
-      final title = b.title.toLowerCase();
-      if (title.contains(searchTerm)) {
-        return true;
-      }
-      final nameDistance = _levenshteinDistance(title, searchTerm);
-      if (title.length >= 3 && nameDistance <= 1) {
-        return true;
-      } else if (title.length > 5 && nameDistance <= 2) {
-        return true;
-      } else if (title.length > 7 && nameDistance <= 4) {
-        return true;
-      } else {
-        return false;
-      }
-    }).toList();
-    return filtered;
-  }
-
-  static int _levenshteinDistance(String a, String b) {
-    if (a == b) {
-      return 0;
-    }
-    if (a.isEmpty) {
-      return b.length;
-    }
-    if (b.isEmpty) {
-      return a.length;
-    }
-
-    List<List<int>> matrix = List.generate(b.length + 1,
-        (i) => List.generate(a.length + 1, (j) => j, growable: false),
-        growable: false);
-
-    for (int i = 1; i <= b.length; i++) {
-      matrix[i][0] = i;
-    }
-
-    for (int i = 1; i <= b.length; i++) {
-      for (int j = 1; j <= a.length; j++) {
-        int substitutionCost = (a[j - 1] == b[i - 1]) ? 0 : 1;
-        matrix[i][j] = _min(
-          matrix[i - 1][j] + 1, // deletion
-          matrix[i][j - 1] + 1, // insertion
-          matrix[i - 1][j - 1] + substitutionCost, // substitution
-        );
-      }
-    }
-
-    return matrix[b.length][a.length];
-  }
-
-  static int _min(int a, int b, int c) {
-    return (a < b) ? (a < c ? a : c) : (b < c ? b : c);
   }
 
   @override
@@ -302,17 +248,4 @@ class PersistedBrandsRepository extends BrandsRepository {
         )
         .toList();
   }
-}
-
-class SearchQuery extends Equatable {
-  final List<BrandEntity> allBrands;
-  final String query;
-
-  const SearchQuery(this.allBrands, this.query);
-
-  @override
-  List<Object?> get props => [
-        allBrands,
-        query,
-      ];
 }
