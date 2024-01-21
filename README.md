@@ -12,6 +12,8 @@ Flutter pet project roadmap **[based on Bunny Search](https://medium.com/@daria.
 
 Custom shaped AppBar **[as seen in the Bunny Search app](https://medium.com/flutter-community/custom-shaped-appbar-as-seen-in-the-bunny-search-app-6312d067485c)**.
 
+How to implement "fuzzy search" **[as in Bunny search app](https://dariadroid.substack.com/p/implementing-fuzzy-search-in-a-flutter)**.
+
 ## Contact me
 
 You can reach out to me via [Twitter](https://twitter.com/dariadroid) if you have any questions.
