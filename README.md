@@ -9,6 +9,7 @@ file, instead of Firebase. The code used in the original copy can be found by se
 ## Articles
 
 Flutter pet project roadmap **[based on Bunny Search](https://medium.com/@daria.orlova/flutter-pet-project-roadmap-31247c8eb015)**.
+
 Custom shaped AppBar **[as seen in the Bunny Search app](https://medium.com/flutter-community/custom-shaped-appbar-as-seen-in-the-bunny-search-app-6312d067485c)**.
 
 ## Contact me
