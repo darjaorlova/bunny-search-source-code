@@ -1,4 +1,4 @@
-import 'package:bunny_search/home/widget/ai_search_insights_page.dart';
+import 'package:bunny_search/home/widget/ai_text_search_insights_page.dart';
 import 'package:bunny_search/theme/app_colors.dart';
 import 'package:bunny_search/theme/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class SearchWithAIButton extends StatelessWidget {
   void _openSearchWithAIDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AISearchInsightsPage(searchQuery: searchQuery),
+      builder: (context) => AITextSearchInsightsPage(searchQuery: searchQuery),
     );
   }
 }

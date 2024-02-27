@@ -50,5 +50,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Upload photos of products to search with AI</string>
+	<key>NSCameraUsageDescription</key>
+    <string>Take photos of products to search with AI</string>
 </dict>
 </plist>

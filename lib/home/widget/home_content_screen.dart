@@ -1,4 +1,5 @@
 import 'package:bunny_search/generated/locale_keys.g.dart';
+import 'package:bunny_search/home/widget/ai_photo_search_insights_page.dart';
 import 'package:bunny_search/home/widget/home_brands_list.dart';
 import 'package:bunny_search/home/widget/home_organizations_section.dart';
 import 'package:bunny_search/home/widget/home_popular_brands_section.dart';
@@ -11,7 +12,9 @@ import 'package:bunny_search/theme/app_colors.dart';
 import 'package:bunny_search/theme/app_typography.dart';
 import 'package:domain/brands/model/brand.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomeContentScreen extends StatelessWidget {
   final bool showProgress;
@@ -112,11 +115,50 @@ class HomeContentScreen extends StatelessWidget {
                 child: SizedBox(
                   height: 32,
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _launchAIInsightsFromPhoto(context),
+        backgroundColor: AppColors.rose,
+        child: const Icon(Icons.camera_alt_outlined, color: AppColors.white),
+      ),
     );
+  }
+
+  Future<void> _launchAIInsightsFromPhoto(BuildContext context) async {
+    final image = await _selectImageForAIInsights(context);
+
+    if (image == null) {
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AIPhotoSearchInsightsPage(
+        imageBytes: image,
+      ),
+    );
+  }
+
+  Future<Uint8List?> _selectImageForAIInsights(BuildContext context) async {
+    try {
+      final photo = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (photo == null) {
+        throw Exception('Failed to select an image');
+      }
+
+      return await photo.readAsBytes();
+    } on Exception {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to select an image, please try again'),
+        ),
+      );
+      return null;
+    }
   }
 }

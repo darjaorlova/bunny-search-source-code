@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bunny_search/generated/locale_keys.g.dart';
 import 'package:bunny_search/main.dart';
 import 'package:bunny_search/theme/app_colors.dart';
@@ -6,19 +8,19 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-class AISearchInsightsPage extends StatefulWidget {
-  final String searchQuery;
+class AIPhotoSearchInsightsPage extends StatefulWidget {
+  final Uint8List imageBytes;
 
-  const AISearchInsightsPage({
+  const AIPhotoSearchInsightsPage({
     Key? key,
-    required this.searchQuery,
+    required this.imageBytes,
   }) : super(key: key);
 
   @override
-  State<AISearchInsightsPage> createState() => _AISearchInsightsPageState();
+  State<AIPhotoSearchInsightsPage> createState() => _AIPhotoSearchInsightsPageState();
 }
 
-class _AISearchInsightsPageState extends State<AISearchInsightsPage> {
+class _AIPhotoSearchInsightsPageState extends State<AIPhotoSearchInsightsPage> {
   var _generatingAIInsights = true;
   var _aiInsights = '';
 
@@ -27,14 +29,15 @@ class _AISearchInsightsPageState extends State<AISearchInsightsPage> {
     super.initState();
 
     final model = GenerativeModel(
-      model: 'gemini-pro',
+      model: 'gemini-pro-vision',
       apiKey: GEMINI_API_KEY,
     );
 
-    final query = widget.searchQuery;
+    final image = widget.imageBytes;
+    final prompt ="""Determine a cosmetics brand from the photo. Check if such cosmetics brand exists. If it doesn't, return "Could not find requested brand". If it exists, provide a detailed cruelty-free status analysis of this brand using the existing criteria: 1) Certifications and blacklist status, 2) Parent company policies, 3) Testing policies of sources and collaborators, 4) Brand's presence in countries with mandatory animal testing laws.""";
+
     model.generateContent([
-      Content.text(
-          """Check if a cosmetics brand with name $query exists. If it doesn't, return "Could not find requested brand". If it exists, provide a cruelty-free status analysis of the brand "${query}" using the existing criteria: 1) Certifications and blacklist status, 2) Parent company policies, 3) Testing policies of sources and collaborators, 4) Brand's presence in countries with mandatory animal testing laws"""),
+      Content.multi([TextPart(prompt), DataPart('image/jpeg', image)]),
     ]).then((value) {
       setState(() {
         _aiInsights = value.text ?? '';
@@ -47,7 +50,7 @@ class _AISearchInsightsPageState extends State<AISearchInsightsPage> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'AI Insights for ${widget.searchQuery}',
+        'AI Insights',
         style: AppTypography.header.copyWith(color: AppColors.accentBlack),
       ),
       content: SingleChildScrollView(
@@ -73,7 +76,7 @@ class _AISearchInsightsPageState extends State<AISearchInsightsPage> {
           ],
         ),
       ),
-      actions: <Widget>[
+      actions: [
         TextButton(
           child: Text(LocaleKeys.home_support_dialog_close_button.tr()),
           onPressed: () => Navigator.of(context).pop(),
