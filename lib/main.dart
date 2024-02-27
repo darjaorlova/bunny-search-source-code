@@ -21,6 +21,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:data/database/database.dart';
 import 'package:bunny_search/generated/codegen_loader.g.dart';
 
+const GEMINI_API_KEY = String.fromEnvironment(
+  'GEMINI_API_KEY',
+  defaultValue: '',
+);
+
 void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();

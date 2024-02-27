@@ -54,22 +54,23 @@ class SliverSearchAppBar extends SliverPersistentHeaderDelegate {
           ),
         ),
         Positioned(
-            right: 48,
-            child: AnimatedOpacity(
-              opacity: snap ? 0 : 1,
-              curve: Curves.fastOutSlowIn,
-              duration: Duration(milliseconds: 200),
-              child: ClipPath(
-                clipper: SearchBunnyIconClipper(),
-                child: Container(
-                  margin: EdgeInsets.only(top: 48),
-                  child: Image.asset(
-                    ImagesProvider.SEARCH_BUNNY,
-                    width: 102,
-                  ),
+          right: 48,
+          child: AnimatedOpacity(
+            opacity: snap ? 0 : 1,
+            curve: Curves.fastOutSlowIn,
+            duration: Duration(milliseconds: 200),
+            child: ClipPath(
+              clipper: SearchBunnyIconClipper(),
+              child: Container(
+                margin: EdgeInsets.only(top: 48),
+                child: Image.asset(
+                  ImagesProvider.SEARCH_BUNNY,
+                  width: 102,
                 ),
               ),
-            )),
+            ),
+          ),
+        ),
         Positioned(
           top: 64 + searchExtraOffset,
           child: sc.SearchBar(

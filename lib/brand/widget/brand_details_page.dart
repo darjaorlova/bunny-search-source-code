@@ -1,3 +1,4 @@
+import 'package:bunny_search/main.dart';
 import 'package:bunny_search/theme/app_colors.dart';
 import 'package:bunny_search/theme/app_typography.dart';
 import 'package:bunny_search/theme/bunny_back_button.dart';
@@ -8,6 +9,7 @@ import 'package:domain/organizations/model/organization.dart';
 import 'package:domain/organizations/model/organization_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:bunny_search/generated/locale_keys.g.dart';
@@ -23,16 +25,25 @@ class BrandDetailsPage extends StatefulWidget {
 
 class _BrandDetailsPageState extends State<BrandDetailsPage> {
   var _height = 0.0;
+  var _generatingAIInsights = true;
+  var _aiInsights = '';
 
-  void _onPanelSlide(double pos) {
-    final fullHeight = MediaQuery.of(context).size.height;
-    final maxHeight = fullHeight * 0.18;
+  @override
+  void initState() {
+    super.initState();
 
-    final fullDiff = fullHeight * 0.18 - fullHeight * 0.09;
-    final height = maxHeight - (fullDiff * pos);
+    final model = GenerativeModel(
+      model: 'gemini-pro',
+      apiKey: GEMINI_API_KEY,
+    );
 
-    setState(() {
-      _height = height;
+    model.generateContent([
+      Content.text("""Provide a cruelty-free status analysis of the brand "${widget.brand}" using the existing criteria: 1) Certifications and blacklist status, 2) Parent company policies, 3) Testing policies of sources and collaborators, 4) Brand's presence in countries with mandatory animal testing laws"""),
+    ]).then((value) {
+      setState(() {
+        _aiInsights = value.text ?? '';
+        _generatingAIInsights = false;
+      });
     });
   }
 
@@ -59,7 +70,12 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
             ],
             onPanelSlide: _onPanelSlide,
             parallaxEnabled: false,
-            panelBuilder: (sc) => _BrandDetailsBody(sc, widget.brand),
+            panelBuilder: (sc) => _BrandDetailsBody(
+              sc,
+              widget.brand,
+              _generatingAIInsights,
+              _aiInsights,
+            ),
             body: Stack(
               children: [
                 Container(
@@ -128,13 +144,32 @@ class _BrandDetailsPageState extends State<BrandDetailsPage> {
       ),
     );
   }
+
+  void _onPanelSlide(double pos) {
+    final fullHeight = MediaQuery.of(context).size.height;
+    final maxHeight = fullHeight * 0.18;
+
+    final fullDiff = fullHeight * 0.18 - fullHeight * 0.09;
+    final height = maxHeight - (fullDiff * pos);
+
+    setState(() {
+      _height = height;
+    });
+  }
 }
 
 class _BrandDetailsBody extends StatelessWidget {
   final ScrollController sc;
   final Brand brand;
+  final bool generatingAIInsights;
+  final String aiInsights;
 
-  const _BrandDetailsBody(this.sc, this.brand);
+  const _BrandDetailsBody(
+    this.sc,
+    this.brand,
+    this.generatingAIInsights,
+    this.aiInsights,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +250,31 @@ class _BrandDetailsBody extends StatelessWidget {
                         LocaleKeys.brand_details_vegan_marker.tr(),
                         true,
                       ),
-                    ]
+                    ],
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    if (generatingAIInsights)
+                      Text(
+                        'Generating AI insights...',
+                        style: AppTypography.caption,
+                      )
+                    else
+                      Text.rich(
+                        TextSpan(
+                          text: 'AI insights: \n',
+                          style: AppTypography.caption,
+                          children: [
+                            TextSpan(
+                              text: aiInsights,
+                              style: AppTypography.description,
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 8,
+                    ),
                   ],
                 ),
               ),

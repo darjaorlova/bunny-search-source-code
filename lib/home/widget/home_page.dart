@@ -25,7 +25,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String searchTerm = '';
   late HomeBloc _bloc;
   late Widget _widget;
 
@@ -72,8 +71,10 @@ class _HomePageState extends State<HomePage> {
             searchBrands: brands,
             popularBrands: state.popularBrands,
             organizations: organizations,
-            onSearchTermChanged: (searchTerm) =>
-                _bloc.add(SearchEvent(searchTerm: searchTerm)),
+            onSearchTermChanged: (searchTerm) => _bloc.add(
+              SearchEvent(searchTerm: searchTerm),
+            ),
+            searchQuery: state.searchTerm,
           );
         }
         return AnimatedSwitcher(

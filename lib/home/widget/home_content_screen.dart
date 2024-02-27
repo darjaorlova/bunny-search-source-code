@@ -4,6 +4,7 @@ import 'package:bunny_search/home/widget/home_organizations_section.dart';
 import 'package:bunny_search/home/widget/home_popular_brands_section.dart';
 import 'package:bunny_search/home/widget/no_overscroll_behaviour.dart';
 import 'package:bunny_search/home/widget/search_bar.dart';
+import 'package:bunny_search/home/widget/search_with_ai_button.dart';
 import 'package:bunny_search/home/widget/sliver_search_app_bar.dart';
 import 'package:bunny_search/organization/model/organization_details.dart';
 import 'package:bunny_search/theme/app_colors.dart';
@@ -21,6 +22,7 @@ class HomeContentScreen extends StatelessWidget {
   final List<Brand> popularBrands;
   final List<OrganizationDetails> organizations;
   final OnSearchTermChanged onSearchTermChanged;
+  final String searchQuery;
 
   const HomeContentScreen({
     Key? key,
@@ -32,6 +34,7 @@ class HomeContentScreen extends StatelessWidget {
     required this.popularBrands,
     required this.organizations,
     required this.onSearchTermChanged,
+    required this.searchQuery,
   }) : super(key: key);
 
   @override
@@ -77,7 +80,8 @@ class HomeContentScreen extends StatelessWidget {
                         organizations: organizations,
                       ),
                     if (showPopularBrands) const HomePopularBrandsSection(),
-                    if (showSearchResults || showProgress)
+                    if (showSearchResults || showProgress) ...[
+                      SearchWithAIButton(searchQuery: searchQuery),
                       Padding(
                         padding: const EdgeInsets.only(
                           left: 16,
@@ -90,6 +94,7 @@ class HomeContentScreen extends StatelessWidget {
                           textAlign: TextAlign.start,
                         ),
                       ),
+                    ],
                     if (showProgress)
                       const Center(
                         child: CircularProgressIndicator(

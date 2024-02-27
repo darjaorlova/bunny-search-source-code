@@ -44,6 +44,7 @@ dependencies:
   easy_localization: ^3.0.0
   cupertino_icons: ^1.0.2
   file: ^6.1.4
+  google_generative_ai: ^0.2.1
 
 dependency_overrides:
   platform: ^3.1.0
