@@ -26,6 +26,11 @@ const GEMINI_API_KEY = String.fromEnvironment(
   defaultValue: '',
 );
 
+const GEMINI_USE_LATEST = bool.fromEnvironment(
+  'GEMINI_USE_LATEST',
+  defaultValue: false,
+);
+
 void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();

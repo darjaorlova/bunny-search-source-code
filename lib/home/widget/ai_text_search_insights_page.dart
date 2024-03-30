@@ -28,7 +28,7 @@ class _AITextSearchInsightsPageState extends State<AITextSearchInsightsPage> {
     super.initState();
 
     final model = GenerativeModel(
-      model: 'gemini-pro',
+      model: GEMINI_USE_LATEST ? 'gemini-1.5-pro-latest' : 'gemini-pro',
       apiKey: GEMINI_API_KEY,
     );
 
