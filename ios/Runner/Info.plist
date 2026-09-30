@@ -14,6 +14,10 @@
 	<array>
 		<string>en</string>
 		<string>ru</string>
+		<string>it</string>
+		<string>de</string>
+		<string>fr</string>
+		<string>es</string>
 	</array>
 	<key>CFBundleName</key>
 	<string>Bunny Search</string>

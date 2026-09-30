@@ -74,10 +74,17 @@ void main() {
           )
         ],
         child: EasyLocalization(
-          fallbackLocale: const Locale('ru'),
+          fallbackLocale: const Locale('en'),
           useOnlyLangCode: true,
           path: 'resources/langs',
-          supportedLocales: const [Locale('ru'), Locale('en')],
+          supportedLocales: const [
+            Locale('ru'),
+            Locale('en'),
+            Locale('it'),
+            Locale('de'),
+            Locale('fr'),
+            Locale('es'),
+          ],
           assetLoader: const CodegenLoader(),
           child: const App(),
         ),
